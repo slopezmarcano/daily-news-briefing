@@ -13,7 +13,7 @@ reference implementation: it works, and the weighting is the part you would chan
 
 ```mermaid
 flowchart TD
-    A["Cron trigger<br/>04:00 Brisbane, Mon to Fri"] --> B["Resolve Brisbane run date<br/>and weekday"]
+    A["Cron trigger, Mon to Fri"] --> B["Resolve location run date<br/>and weekday"]
 
     B --> C["Daily sources<br/>12 feeds<br/>24h window, 72h on Monday"]
     B --> D["Hacker News<br/>Algolia API, points over 100<br/>hardware, runtime, CVEs only"]
