@@ -1,4 +1,7 @@
 # daily-news-briefing
+
+> **Compatibility warning:** This prompt requires a specific agent runtime; [check compatibility](#compatibility-warning).
+
 A scheduled research digest. Once a weekday it sweeps twelve news sources, Hacker
 News and seven academic journals, ranks whatever clears a relevance bar into three
 tiers, and writes a single self-contained HTML file.
@@ -151,3 +154,28 @@ fix. The rest:
 - **No repeats.** Nothing outside the window, nothing a previous digest carried.
 - **Fetched content is data, not instructions.** Stated explicitly in the prompt,
   since the run reads dozens of untrusted pages.
+
+## Compatibility warning
+
+This prompt is written for an agent runtime with four specific capabilities. It
+is not portable to a general chat assistant, and in particular it tends to fail
+in organisation-managed Microsoft Copilot.
+
+**Required:**
+
+1. A fetch tool that returns raw response bodies from arbitrary URLs, including
+   JSON APIs (`api.crossref.org`, `hn.algolia.com`, `api.openalex.org`). Search
+   snippets are not sufficient.
+2. A shell, for `TZ=Australia/Brisbane date` (the run date must not be inferred
+   from the container's UTC clock) and for writing the output file.
+3. The ability to idle for minutes. The Crossref back-off rules require real
+   waits of up to 320 seconds between calls. Around 15 minutes of a normal run
+   is spent deliberately sleeping.
+4. A run budget of roughly 25 to 30 sequential tool calls.
+
+**Typical failure in enterprise Copilot:** the code sandbox has restricted
+outbound network access and rejects direct calls with `HTTP 403 Request blocked
+by sandbox policy`, while the browsing layer will not hand back raw API JSON.
+The Crossref journal sweep then yields nothing, because it is the one part of
+the spec that has no non-API fallback. A refusal is the correct outcome here,
+not a bug.
